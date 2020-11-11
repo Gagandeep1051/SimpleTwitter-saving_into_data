@@ -96,7 +96,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
         public void bind(final Tweet tweet) {
             tvBody.setText(tweet.body);
-            tvscreenName.setText(tweet.user.screeNname);
+            tvscreenName.setText(tweet.user.screeName);
             boolean isPortrait = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
             int placeholder = isPortrait ? R.drawable.ph : R.drawable.ph;
@@ -122,7 +122,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
                 public void onClick(View view) {
                    Intent i = new Intent(context,DetailActivity.class);
                    i.putExtra("body",tweet.body);
-                   i.putExtra("screenName",tweet.user.screeNname);
+                   i.putExtra("screenName",tweet.user.screeName);
                    i.putExtra("image",tweet.user.profileimageurl);
                    i.putExtra("time",tweet.getFormattedTimeStamp(tweet.CreatedAt));
                    i.putExtra("media",tweet.mediaUrl);

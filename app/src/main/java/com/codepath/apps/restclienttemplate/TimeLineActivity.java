@@ -1,17 +1,28 @@
 package com.codepath.apps.restclienttemplate;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.TweetDao;
+import com.codepath.apps.restclienttemplate.models.TweetWithUser;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -23,13 +34,54 @@ import okhttp3.Headers;
 public class TimeLineActivity extends AppCompatActivity {
 
     public static final String TAG = "TimeLineActivity";
+    // REQUEST_CODE can be any value we like, used to determine the result type later
+    private final int REQUEST_CODE = 20;
     TwitterClient Client;
     RecyclerView rvTweet;
     List<Tweet> tweets;
     TweetAdapter adapter;
     SwipeRefreshLayout swipeContainer;
     EndlessRecyclerViewScrollListener scrollListener;
+    TweetDao tweetDao;
+    FloatingActionButton Fab;
 
+
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.compose){
+            //icon has been selected
+            //go to navigate activity
+            Intent intent = new Intent(this, ComposeActivity.class);
+            startActivityForResult(intent, REQUEST_CODE);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE && resultCode== RESULT_OK){
+            //get data from the intend
+            Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
+            //update the tweet feed
+            //modify data source
+            tweets.add(0, tweet);
+            //update the adapter
+            adapter.notifyItemInserted(0);
+            rvTweet.smoothScrollToPosition(0);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +89,20 @@ public class TimeLineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_time_line2);
 
         Client = TwitterApp.getRestClient(this);
+        tweetDao= ((TwitterApp) getApplicationContext()).getMyDatabase().tweetDao();
+
+        Fab=findViewById(R.id.Fab);
+        Fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(TimeLineActivity.this, "Floating action", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(TimeLineActivity.this, ComposeActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
+                //adapter.notifyItemInserted(0);
+                rvTweet.smoothScrollToPosition(0);
+            }
+        });
+
         ActionBar actionBar = getSupportActionBar(); // or getActionBar();
         getSupportActionBar().setTitle(" Twitter"); // set the top title
         String title = actionBar.getTitle().toString(); // get the title
@@ -59,9 +125,6 @@ public class TimeLineActivity extends AppCompatActivity {
 
             }
         });
-
-
-
         //find the recyclerView
         rvTweet=findViewById(R.id.rvTweet);
         //init the list of tweets and adapter
@@ -69,24 +132,35 @@ public class TimeLineActivity extends AppCompatActivity {
         adapter=new TweetAdapter(this,tweets);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTweet.setLayoutManager(layoutManager);
+
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this,layoutManager.getOrientation());
         rvTweet.addItemDecoration(itemDecoration);
 
-                //recyclerView Setup: layout manager and adapter
+        //recyclerView Setup: layout manager and adapter
 
         rvTweet.setAdapter(adapter);
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-
                 Log.i(TAG,"onLoadMOre"+ page);
                 loadMoreData();
             }
         };
         // Add the scroll listener to the recycler view
         rvTweet.addOnScrollListener(scrollListener);
-        populateHomeTimeLine();
         
+        //Query for the existing tweets in the DB
+//        AsyncTask.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.i(TAG, "showing data from database");
+//                List<TweetWithUser> tweetWithUsers = tweetDao.recentItems();
+//                List<Tweet> tweetsFromDB = TweetWithUser.getTweetList(tweetWithUsers);
+//                adapter.clear();
+//                adapter.addAll(tweetsFromDB);
+//            }
+//        });
+        populateHomeTimeLine();
 
     }
 

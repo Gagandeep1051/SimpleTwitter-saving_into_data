@@ -51,8 +51,10 @@
         android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/tvscreenName"
         tools:text="10h">
-
     </TextView>
 
 
+
+
 </RelativeLayout>
+
