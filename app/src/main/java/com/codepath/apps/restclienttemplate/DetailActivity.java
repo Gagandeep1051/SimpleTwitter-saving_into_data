@@ -26,7 +26,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ActionBar actionBar = getSupportActionBar(); // or getActionBar();
-        getSupportActionBar().setTitle(" Twitter"); // set the top title
+        getSupportActionBar().setTitle(" Profile"); // set the top title
         String title = actionBar.getTitle().toString(); // get the title
         actionBar.show(); // or even hide the actionbar
         getSupportActionBar().setDisplayShowHomeEnabled(true);

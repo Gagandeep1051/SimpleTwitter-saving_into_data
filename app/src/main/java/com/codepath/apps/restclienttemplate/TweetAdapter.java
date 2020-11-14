@@ -44,7 +44,8 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
         //Bind the tweet with the view holder
         holder.bind(tweet);
-        holder.tvTime.setText(tweet.getFormattedTimeStamp(tweet.CreatedAt));
+        //holder.tvTime.setText(tweet.getFormattedTimeStamp(tweet.CreatedAt));
+        holder.tvTime.setText(tweet.CreatedAt);
 
 
 
@@ -128,8 +129,8 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
                    i.putExtra("media",tweet.mediaUrl);
 
                    context.startActivity(i);
-                   }
-                });
+               }
+            });
 
 
 

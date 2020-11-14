@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_margin="10dp">
 
     <ImageView
         android:id="@+id/ivProfileImage"
@@ -36,12 +36,13 @@
         android:autoLink="all"
         android:linksClickable="true"
         tools:text="This is body" />
+
     <ImageView
         android:id="@+id/ivMedia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/tvBody"
         android:layout_below="@+id/tvBody"
+        android:layout_alignStart="@+id/tvBody"
         app:srcCompat="@android:color/holo_blue_bright" />
 
     <TextView
@@ -50,11 +51,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/tvscreenName"
-        tools:text="10h">
-    </TextView>
-
-
-
+        tools:text="10h"></TextView>
 
 </RelativeLayout>
-
